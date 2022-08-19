@@ -35,7 +35,8 @@ public class UserEntity extends BaseTimeEntity {
   @OneToOne(mappedBy = "user")
   private UserInfoEntity userInfoEntity;
 
-  @OneToOne(mappedBy = "user")
+  @OneToOne
+  @JoinColumn(name="id")
   private EmailConfigEntity emailConfigEntity;
 
   @OneToMany(mappedBy = "user")

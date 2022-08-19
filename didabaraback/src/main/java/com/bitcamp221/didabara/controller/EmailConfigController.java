@@ -1,14 +1,16 @@
 package com.bitcamp221.didabara.controller;
 
 import com.bitcamp221.didabara.model.EmailConfigEntity;
+import com.bitcamp221.didabara.model.UserEntity;
+import com.bitcamp221.didabara.presistence.EmailConfigRepository;
 import com.bitcamp221.didabara.service.EmailConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -17,7 +19,10 @@ public class EmailConfigController {
     @Autowired
     private EmailConfigService emailConfigService;
 
-  
+    @Autowired
+    private EmailConfigRepository emailConfigRepository;
+
+
     /**
      * 작성자 : 김남주
      * 메서드 기능 : 인증코드 일치 확인
@@ -30,7 +35,7 @@ public class EmailConfigController {
      * }
      * @return "코드 인증 확인" OR  "코드 불일치"
      */
-    @PostMapping("/check") 
+   /** @PostMapping("/check")
     public ResponseEntity<?> checkEmail(@RequestBody Map emailAuthCodeMap) {
         Object o = emailAuthCodeMap.get("email");
         Object o1 = emailAuthCodeMap.get("authCode");
@@ -43,6 +48,7 @@ public class EmailConfigController {
         }
         return ResponseEntity.ok().body("코드 인증 확인");
     }
+**/
 
     /**
      * 작성자 : 김남주
@@ -50,6 +56,8 @@ public class EmailConfigController {
      * @param email http://localhost:8080/email/testidi21233@gmail.com
      * @return 전송 완료 or 전송 실패
      */
+
+
     @GetMapping("/{email}")
     public ResponseEntity<?> emailSender(@PathVariable String email) {
         try {
@@ -63,4 +71,19 @@ public class EmailConfigController {
 
         return ResponseEntity.ok().body("전송 완료");
     }
+
+    @PostMapping("/check")
+    public ResponseEntity<?> checkEmail(@RequestBody EmailConfigEntity emailConfigEntity) {
+
+        boolean checkEmail = emailConfigService.check(emailConfigEntity);
+
+        if (!checkEmail){
+            return ResponseEntity.badRequest().body("코드 불일치");
+        }
+        return ResponseEntity.ok().body("코드 인증 확인");
+    }
+
+
+
+
 }

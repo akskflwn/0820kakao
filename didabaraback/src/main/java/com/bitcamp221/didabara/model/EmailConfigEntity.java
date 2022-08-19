@@ -1,9 +1,6 @@
 package com.bitcamp221.didabara.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,10 +18,8 @@ public class EmailConfigEntity extends BaseTimeEntity {
     @Column(name = "id")
     private Long id;
 
-    //  외래키를 가져와서 기본키로 설정하기 위한 설정.
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @MapsId
-    @JoinColumn(name = "id", unique = true, nullable = false)
+
+    @OneToOne(mappedBy = "emailConfigEntity")
     private UserEntity user;
 
     @Column(name = "auth_code", nullable = false, length = 30)
