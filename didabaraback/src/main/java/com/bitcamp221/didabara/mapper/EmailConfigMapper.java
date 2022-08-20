@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Mapper
 public interface EmailConfigMapper {
@@ -29,6 +30,6 @@ public interface EmailConfigMapper {
                     "join user\n" +
                     "on emailconfig.id=user.id\n" +
                     "where user.username=#{username}")
-    String findCode(@Param("username")String username);
+    Map findCode(@Param("username")String username);
 
 }

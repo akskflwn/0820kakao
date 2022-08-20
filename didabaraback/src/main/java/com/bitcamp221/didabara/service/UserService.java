@@ -1,11 +1,14 @@
 package com.bitcamp221.didabara.service;
 
+import com.bitcamp221.didabara.dto.UserDTO;
 import com.bitcamp221.didabara.model.UserEntity;
 import com.bitcamp221.didabara.presistence.UserRepository;
+import com.bitcamp221.didabara.security.TokenProvider;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TokenProvider tokenProvider;
 
 
     public UserEntity creat(final UserEntity userEntity) {
@@ -50,7 +56,6 @@ public class UserService {
     //  아이디 & 비밀번호 일치 확인
     public UserEntity getByCredentials(final String username, final String password, final PasswordEncoder passwordEncoder) {
         final UserEntity originalUser = userRepository.findByUsername(username);
-
 //    matches
         if (originalUser != null && passwordEncoder.matches(password, originalUser.getPassword())) {
             return originalUser;
@@ -110,7 +115,7 @@ public class UserService {
     }
 
 
-    public void createKakaoUser(String token)  {
+    public UserEntity createKakaoUser(String token)  {
 
         System.out.println("token = " + token);
 
@@ -143,19 +148,40 @@ public class UserService {
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
 
-            int id = element.getAsJsonObject().get("id").getAsInt();
+            Long id = element.getAsJsonObject().get("id").getAsLong();
+            String nickname= element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
             boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
             String email = "";
             if(hasEmail){
                 email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
+
             }
             System.out.println("id : " + id);
             System.out.println("email : " + email);
+
+            UserEntity kakaoUser = UserEntity.builder()
+                    .id(id)
+                    .username(email)
+                    .nickname(nickname)
+                    .password(id+"")
+                    .build();
+
+            final String tokenasd=tokenProvider.create(kakaoUser);
+            System.out.println("///////////////////////////////////////////////////////");
+            System.out.println(tokenasd);
+            System.out.println("///////////////////////////////////////////////////////");
+            userRepository.save(kakaoUser);
+
             br.close();
+            return kakaoUser;
+
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     /* 카카오 로그인(test) */

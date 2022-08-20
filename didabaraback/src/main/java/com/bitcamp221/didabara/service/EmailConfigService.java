@@ -82,7 +82,7 @@ public class EmailConfigService {
      * @param email
      * @throws Exception
      */
-    /** public void mailsend(String email) throws Exception {
+     public void mailsend(String email) throws Exception {
         // 난수 발생
         log.info("mailsend 실행2");
         String code = UUID.randomUUID().toString().substring(0, 6);
@@ -106,11 +106,13 @@ public class EmailConfigService {
         mailSender.send(m);
 
     }
-     **/
 
 
-    public void mailsend(String username) throws Exception {
-         String code = emailConfigMapper.findCode(username);
+
+    public void mailsend22(String username) throws Exception {
+         Map map = emailConfigMapper.findCode(username);
+         map.get("username");
+         map.get("auth_code");
 
 
 
@@ -119,7 +121,7 @@ public class EmailConfigService {
         h.setFrom("kxg1198@naver.com");
         h.setTo(username);
         h.setSubject("인증 메일이 도착했습니다.");
-        h.setText(code); // 이메일 본문에 적을 값
+        h.setText((String) map.get("auth_code")); // 이메일 본문에 적을 값
         log.info("전송완료");
         mailSender.send(m);
     }

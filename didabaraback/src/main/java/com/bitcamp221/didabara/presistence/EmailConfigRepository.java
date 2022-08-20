@@ -11,6 +11,6 @@ public interface EmailConfigRepository extends JpaRepository<EmailConfigEntity, 
 
 
 
-    //EmailConfigEntity findByUsername(String username);
+
 
 }

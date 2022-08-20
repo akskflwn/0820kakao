@@ -67,15 +67,16 @@ public class UserController {
                     .build();
             emailConfigRepository.save(emailConfigEntity);
 
+
         //
 //      요청을 이용해 저장할 유저 객체 생성
             UserEntity userEntity = UserEntity.builder()
-
                     .username(userDTO.getUsername())
                     .password(passwordEncoder.encode(userDTO.getPassword()))
                     .nickname(userDTO.getNickname())
                     .emailConfigEntity(emailConfigEntity)
                     .build();
+
 
 
 
@@ -158,6 +159,7 @@ public class UserController {
     //put 을 사용하면 전달한값 외는 모두 null or 초기값으로 처리된다고함..
     @PatchMapping("/user")
     public ResponseEntity<?> update(@RequestBody UserDTO userDTO){
+
         try {
             UserEntity userEntity = UserEntity.builder()
                     .id(userDTO.getId())

@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-import java.util.UUID;
+
 
 @Slf4j
 @RestController
@@ -35,24 +34,24 @@ public class EmailConfigController {
      * }
      * @return "코드 인증 확인" OR  "코드 불일치"
      */
-   /** @PostMapping("/check")
-    public ResponseEntity<?> checkEmail(@RequestBody Map emailAuthCodeMap) {
-        Object o = emailAuthCodeMap.get("email");
-        Object o1 = emailAuthCodeMap.get("authCode");
-        log.info("o.email={}", o.toString());
-        log.info("o1.authCode={}", o1.toString());
-        boolean checkEmail = emailConfigService.checkEmail(emailAuthCodeMap);
+    /** @PostMapping("/check") public ResponseEntity<?> checkEmail(@RequestBody Map emailAuthCodeMap) {
+    Object o = emailAuthCodeMap.get("email");
+    Object o1 = emailAuthCodeMap.get("authCode");
+    log.info("o.email={}", o.toString());
+    log.info("o1.authCode={}", o1.toString());
+    boolean checkEmail = emailConfigService.checkEmail(emailAuthCodeMap);
 
-        if (!checkEmail){
-            return ResponseEntity.badRequest().body("코드 불일치");
-        }
-        return ResponseEntity.ok().body("코드 인증 확인");
+    if (!checkEmail){
+    return ResponseEntity.badRequest().body("코드 불일치");
     }
-**/
+    return ResponseEntity.ok().body("코드 인증 확인");
+    }
+     **/
 
     /**
      * 작성자 : 김남주
      * 메서드 기능 : 회원 가입한 사람의 이메일을 받아서 인증 코드 전송
+     *
      * @param email http://localhost:8080/email/testidi21233@gmail.com
      * @return 전송 완료 or 전송 실패
      */
@@ -71,19 +70,19 @@ public class EmailConfigController {
 
         return ResponseEntity.ok().body("전송 완료");
     }
-
-    @PostMapping("/check")
-    public ResponseEntity<?> checkEmail(@RequestBody EmailConfigEntity emailConfigEntity) {
-
-        boolean checkEmail = emailConfigService.check(emailConfigEntity);
-
-        if (!checkEmail){
-            return ResponseEntity.badRequest().body("코드 불일치");
-        }
-        return ResponseEntity.ok().body("코드 인증 확인");
-    }
-
-
-
-
 }
+
+//    @PostMapping("/check")
+//    public ResponseEntity<?> checkEmail(@RequestBody EmailConfigEntity emailConfigEntity) {
+
+//        boolean checkEmail = emailConfigService.check(emailConfigEntity);
+
+//        if (!checkEmail){
+//            return ResponseEntity.badRequest().body("코드 불일치");
+//        }
+//        return ResponseEntity.ok().body("코드 인증 확인");
+//    }
+
+
+
+//}
