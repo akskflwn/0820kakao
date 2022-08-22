@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 public class ReplyDTO {
 
   private Long id;
-  private CategoryItemEntity categoryItem;
-  private SubscriberEntity writer;
+  private Long categoryItem;
+  private Long writer;
   private String content;
   private LocalDateTime createdDate;
   private LocalDateTime modifiedDate;

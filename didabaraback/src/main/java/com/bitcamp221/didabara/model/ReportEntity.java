@@ -21,14 +21,12 @@ public class ReportEntity extends BaseTimeEntity{
   private Long id;
 
   //  신고자
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "user_id", nullable = false)
-  private UserEntity user;
+  @Column(name = "user_id", nullable = false)
+  private Long user;
 
   //  신고 받는 대상
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "host_id", nullable = false)
-  private CategoryEntity host;
+  @Column(name = "host_id", nullable = false)
+  private Long host;
 
   //  신고 시에 상세 내용 받는 컬럼
   @Column(name = "content", nullable = false)
@@ -38,7 +36,6 @@ public class ReportEntity extends BaseTimeEntity{
   @Column(name = "report_category", nullable = false, length = 30)
   private String reportCategory;
 
-  @ManyToOne
-  @JoinColumn(name = "subscriber_entity_id")
-  private SubscriberEntity subscriber;
+  @Column(name = "subscriber_entity_id")
+  private Long subscriber;
 }

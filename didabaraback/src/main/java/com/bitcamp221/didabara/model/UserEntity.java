@@ -32,6 +32,7 @@ public class UserEntity extends BaseTimeEntity {
   @Column(name = "nickname", nullable = false, length = 30, unique = true)
   private String nickname;
 
+<<<<<<< HEAD
   @OneToOne(mappedBy = "user")
   private UserInfoEntity userInfoEntity;
 
@@ -52,6 +53,8 @@ public class UserEntity extends BaseTimeEntity {
   private List<CategoryEntity> categoryEntities = new ArrayList<CategoryEntity>();
 
 
+=======
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
   public void changePassword(String password){
     this.password = password;
   }

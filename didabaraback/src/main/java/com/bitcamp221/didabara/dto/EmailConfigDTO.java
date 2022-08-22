@@ -16,14 +16,13 @@ import java.time.LocalDateTime;
 public class EmailConfigDTO {
 
   private Long id;
-  private UserEntity user;
+  private Long user;
   private String authCode;
   private LocalDateTime createdDate;
   private LocalDateTime modifiedDate;
 
   public EmailConfigDTO (EmailConfigEntity emailConfigEntity) {
     this.id = emailConfigEntity.getId();
-    this.user = emailConfigEntity.getUser();
     this.authCode = emailConfigEntity.getAuthCode();
     this.createdDate = emailConfigEntity.getCreatedDate();
     this.modifiedDate = emailConfigEntity.getModifiedDate();
@@ -33,7 +32,6 @@ public class EmailConfigDTO {
 
     return EmailConfigEntity.builder()
             .id(emailConfigDTO.getId())
-            .user(emailConfigDTO.getUser())
             .authCode(emailConfigDTO.getAuthCode())
             .build();
   }

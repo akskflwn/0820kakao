@@ -2,10 +2,7 @@ package com.bitcamp221.didabara.mapper;
 
 import com.bitcamp221.didabara.model.EmailConfigEntity;
 import com.bitcamp221.didabara.model.UserEntity;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +11,7 @@ import java.util.Map;
 public interface EmailConfigMapper {
 
     @Select("SELECT * FROM emailconfig WHERE " +
-            "email=#{emailConfigEntity.email} AND auth_code=#{emailConfigEntity.authCode}")
+            "email=#{emailConfigEntity.id} AND auth_code=#{emailConfigEntity.authCode}")
     EmailConfigEntity selectEmailAndCode(@Param("emailConfigEntity") EmailConfigEntity emailConfigEntity);
 
     // 작성자 : 김남주
@@ -24,6 +21,7 @@ public interface EmailConfigMapper {
             "auth_code=#{code})")
     int saveUserIntoEmailconfig(@Param("user") UserEntity user, @Param("code") String code);
 
+<<<<<<< HEAD
 
     @Select(
             "select emailconfig.auth_code,user.username from emailconfig \n" +
@@ -32,4 +30,8 @@ public interface EmailConfigMapper {
                     "where user.username=#{username}")
     Map findCode(@Param("username")String username);
 
+=======
+    @Update("UPDATE emailconfig SET auth_code = #{code} WHERE id=#{user.id}")
+    int updateUserIntoEmailconfig(@Param("user") UserEntity user, @Param("code") String code);
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
 }

@@ -10,6 +10,7 @@ import com.bitcamp221.didabara.service.EmailConfigService;
 import com.bitcamp221.didabara.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+<<<<<<< HEAD
+=======
+import java.util.HashMap;
+import java.util.Map;
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
 import java.util.UUID;
 
 @Slf4j
@@ -57,23 +63,36 @@ public class UserController {
             if (userDTO == null || userDTO.getPassword() == null) {
                 throw new RuntimeException("Invalid Password value");
             }
+<<<<<<< HEAD
         //난수생성
             String code = UUID.randomUUID().toString().substring(0, 6);
             log.info(code);
 
         //
+=======
+            //난수생성
+            String code = UUID.randomUUID().toString().substring(0, 6);
+            log.info(code);
+
+            //
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
             EmailConfigEntity emailConfigEntity = EmailConfigEntity.builder()
                     .authCode(code)
                     .build();
             emailConfigRepository.save(emailConfigEntity);
 
+<<<<<<< HEAD
 
         //
+=======
+            //
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
 //      요청을 이용해 저장할 유저 객체 생성
             UserEntity userEntity = UserEntity.builder()
                     .username(userDTO.getUsername())
                     .password(passwordEncoder.encode(userDTO.getPassword()))
                     .nickname(userDTO.getNickname())
+<<<<<<< HEAD
                     .emailConfigEntity(emailConfigEntity)
                     .build();
 
@@ -94,14 +113,34 @@ public class UserController {
            System.out.println("registerdUser Modifiedtime:" + registeredUser.getModifiedDate());
 
       //응답객체 만들기(패스워드 제외)
+=======
+//                    .emailConfigEntity(emailConfigEntity)
+                    .build();
+
+
+
+//      서비스를 이용해 리포지터리에 유저 저장
+            UserEntity registeredUser = userService.creat(userEntity);
+
+//
+            System.out.println("registerdUser Datetiem:" + registeredUser.getCreatedDate());
+            System.out.println("registerdUser Modifiedtime:" + registeredUser.getModifiedDate());
+
+            //응답객체 만들기(패스워드 제외)
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
             UserDTO responseUserDTO = UserDTO.builder()
                     .id(registeredUser.getId())
                     .username(registeredUser.getUsername())
                     .nickname(registeredUser.getNickname())
                     .build();
 
+<<<<<<< HEAD
       //유저 정보는 현재 하나이므로 리스트로 만들 필요 없음
       //ResponseDTO를 사용하지 않고 UserDTO 타입으로 반환
+=======
+            //유저 정보는 현재 하나이므로 리스트로 만들 필요 없음
+            //ResponseDTO를 사용하지 않고 UserDTO 타입으로 반환
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
             log.info("회원가입 완료");
 
 
@@ -198,20 +237,32 @@ public class UserController {
     //프론트에서 인가코드 받아오는 url
     /* 카카오 로그인 */
     @GetMapping("/kakao")
-    public ResponseEntity<?> kakaoCallback(String code) {
+    public Map kakaoCallback(@Param("code") String code) {
         log.info("code={}", code);
 
+<<<<<<< HEAD
         String access_Token = userService.getKaKaoAccessToken(code);
 
         UserEntity kakaoUser=userService.createKakaoUser(access_Token);
         //tokenProvider.create(kakaoUser);
 
+=======
+        String[] access_Token = userService.getKaKaoAccessToken(code);
+        String access_found_in_token = access_Token[0];
+        // 배열로 받은 토큰들의 accsess_token만 createKaKaoUser 메서드로 전달
+        UserEntity kakaoUser = userService.createKakaoUser(access_found_in_token);
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
 
-        return ResponseEntity.ok().body(access_Token);
+        Map map = new HashMap();
+        map.put("kakaoUser", kakaoUser);
+        map.put("access_Token", access_Token[0]);
+        map.put("refresh_Token", access_Token[1]);
+        map.put("id_Token", access_Token[2]);
+
+        return map;
     }
 
     // https://kauth.kakao.com/oauth/authorize?client_id=4af7c95054f7e1d31cff647965678936&redirect_uri=http://localhost:8080/auth/kakao&response_type=code
 
 
 }
-

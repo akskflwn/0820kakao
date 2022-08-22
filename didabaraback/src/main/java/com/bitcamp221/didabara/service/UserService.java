@@ -1,14 +1,24 @@
 package com.bitcamp221.didabara.service;
 
+<<<<<<< HEAD
 import com.bitcamp221.didabara.dto.UserDTO;
+=======
+import com.bitcamp221.didabara.mapper.EmailConfigMapper;
+import com.bitcamp221.didabara.mapper.UserMapper;
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
 import com.bitcamp221.didabara.model.EmailConfigEntity;
 import com.bitcamp221.didabara.model.UserEntity;
 import com.bitcamp221.didabara.presistence.EmailConfigRepository;
 import com.bitcamp221.didabara.presistence.UserRepository;
 import com.bitcamp221.didabara.security.TokenProvider;
+<<<<<<< HEAD
+=======
+import com.google.gson.Gson;
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +39,13 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private EmailConfigMapper emailConfigMapper;
+
+    @Autowired
+    private TokenProvider tokenProvider;
 
     @Autowired
     private TokenProvider tokenProvider;
@@ -148,6 +165,8 @@ public class UserService {
             while ((line = br.readLine()) != null) {
                 result += line;
             }
+
+
             System.out.println("response body : " + result);
 
             //Gson 라이브러리로 JSON파싱
@@ -155,8 +174,12 @@ public class UserService {
             JsonElement element = parser.parse(result);
 
             Long id = element.getAsJsonObject().get("id").getAsLong();
+<<<<<<< HEAD
             String nickname= element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
+=======
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
             boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
+            String nickname = element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
             String email = "";
             if(hasEmail){
                 email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
@@ -164,6 +187,7 @@ public class UserService {
             }
             System.out.println("id : " + id);
             System.out.println("email : " + email);
+<<<<<<< HEAD
 
             //난수생성
             String code = UUID.randomUUID().toString().substring(0, 6);
@@ -185,6 +209,20 @@ public class UserService {
 
             //
             final String tokenasd=tokenProvider.create(kakaoUser);
+=======
+            System.out.println("nickname = " + nickname);
+
+            UserEntity user = UserEntity.builder()
+                    .id(id)
+                    .username(email)
+                    .nickname(nickname)
+                    .password(id+"")
+                    .build();
+
+            // user로 찾은 bearer 토큰 값
+            String find_user_token = tokenProvider.create(user);
+            System.out.println("find_user_token = " + find_user_token);
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
             br.close();
             //
             if(!userRepository.existsByUsername(kakaoUser.getUsername())){
@@ -207,19 +245,33 @@ public class UserService {
 
 
 
+            // save 하기 전에 db에 저장되어 있는지 확인후
+            // 저장되어있으면 save하지 않음
+
+            // 이메일로 찾은 유저테이블의 유저객체
+            UserEntity userIdByEmail = userMapper.selectUserIdByEmail(email);
+
+            if (userIdByEmail == null && !userIdByEmail.getUsername().equals(email)) {
+                userRepository.save(user);
+            }
+            return user;
+
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
         return null;
     }
 
     /* 카카오 로그인(test) */
-    public String getKaKaoAccessToken(String code){
-        String access_Token="";
-        String refresh_Token ="";
+    public String[] getKaKaoAccessToken(String code) {
+        String access_Token = "";
+        String refresh_Token = "";
         String reqURL = "https://kauth.kakao.com/oauth/token";
 
-        try{
+        String result = null;
+        String id_token = null;
+        try {
             URL url = new URL(reqURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -244,15 +296,19 @@ public class UserService {
             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line = "";
-            String result = "";
+            result = "";
 
             while ((line = br.readLine()) != null) {
                 result += line;
             }
+            // bearer 토큰 값만 추출(log에 찍히는 값의 이름은 id_Token)
             System.out.println("response body : " + result);
+            String[] temp = result.split(",");
+            id_token = temp[3].substring(11);
+            System.out.println("idToken = " + id_token);
 
 
-            //Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
+//            Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
 
@@ -264,11 +320,17 @@ public class UserService {
 
             br.close();
             bw.close();
-        }catch (Exception e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        String[] arrTokens = new String[3];
+        arrTokens[0] = access_Token;
+        arrTokens[1] = refresh_Token;
+        arrTokens[2] = id_token;
 
-        return access_Token;
+        // token 값들 배열로 리턴(프론트에서 쓰일지도 모르기 때문)
+        return arrTokens;
     }
 
 

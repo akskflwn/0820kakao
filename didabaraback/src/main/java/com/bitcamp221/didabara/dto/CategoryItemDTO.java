@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class CategoryItemDTO {
 
   private Long id;
-  private CategoryEntity category;
+  private Long category;
   private String itemPath;
   private String title;
   private String content;

@@ -59,8 +59,17 @@ public class EmailConfigService {
         Map haveAuthCodeUser = null;
         try {
             haveAuthCodeUser = userMapper.selectUsernameAndAuthCode(emailAuthCodeMap);
+<<<<<<< HEAD
             log.info("checkEmailConfigEntity={}", haveAuthCodeUser);
             if (!haveAuthCodeUser.get("auth_code").equals(emailAuthCodeMap.get("authCode"))) {
+=======
+            log.info("haveAuthCodeUser.get(\"authCode\")={}", haveAuthCodeUser.get("authCode"));
+            String o1 = (String) emailAuthCodeMap.get("authCode");
+            String o = (String) haveAuthCodeUser.get("auth_code");
+            log.info("o1={}", o1);
+            log.info("o={}",o);
+            if (!o1.equals(o)) {
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
                 throw new Exception("일치하지 않는 계정, 코드");
             }
             return true;
@@ -90,10 +99,21 @@ public class EmailConfigService {
 
         // 이메일로 찾은 유저 객체
         UserEntity userIdByEmail = userMapper.selectUserIdByEmail(email);
+<<<<<<< HEAD
         log.info("userIdByEmail.getUsername={}", userIdByEmail.getUsername());
+=======
+        log.info("userIdByEmail.getUsername={}",userIdByEmail.getUsername());
+        log.info("userIdByEmail.getId()={}",userIdByEmail.getId());
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
 
         // emailconfig 테이블에 찾은 아이디 값,이메일,인증코드 저장
-        int checkRow = emailConfigMapper.saveUserIntoEmailconfig(userIdByEmail, code);
+
+        int checkRow = 0;
+        if (userIdByEmail != null) {
+            checkRow= emailConfigMapper.updateUserIntoEmailconfig(userIdByEmail, code);
+        }
+
+        checkRow = emailConfigMapper.saveUserIntoEmailconfig(userIdByEmail, code);
         log.info("checkRow={}", checkRow);
 
         MimeMessage m = mailSender.createMimeMessage();

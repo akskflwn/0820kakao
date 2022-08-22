@@ -22,17 +22,9 @@ public class SubscriberEntity extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "category_id", nullable = false)
-  private CategoryEntity category;
+  @Column(name = "category_id", nullable = false)
+  private Long category;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "user_id", nullable = false)
-  private UserEntity user;
-
-  @OneToMany(mappedBy = "writer")
-  private List<ReplyEntity> replyEntities = new ArrayList<ReplyEntity>();
-
-  @OneToMany(mappedBy = "user")
-  private List<CheckedEntity> checkedEntities =new ArrayList<CheckedEntity>();
+  @Column(name = "user_id", nullable = false)
+  private Long user;
 }

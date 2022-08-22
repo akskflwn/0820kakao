@@ -1,23 +1,20 @@
-package com.bitcamp221.didabara;
-
+package com.bitcamp221.didabara.controller;
 
 import com.bitcamp221.didabara.presistence.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
-@Transactional
-public class TestController {
+import static org.junit.jupiter.api.Assertions.*;
 
-    @Autowired
+class EmailConfigControllerTest {
+
     UserRepository userRepository;
 
+
     @Test
-    public void 테스트() {
+    public void test() {
         System.out.println("userRepository = " + userRepository);
     }
-
 
 }

@@ -20,14 +20,11 @@ public class ReplyEntity extends BaseTimeEntity {
   @Column(name = "id", unique = true, nullable = false)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "category_item_id", nullable = false)
-  private CategoryItemEntity categoryItem;
+  @Column(name = "category_item_id", nullable = false)
+  private Long categoryItem;
 
-  //  리플 작성자의 id 값
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "writer_id", nullable = false)
-  private SubscriberEntity writer;
+  @Column(name = "writer_id", nullable = false)
+  private Long writer;
 
   @Column(name = "content", nullable = false)
   private String content;

@@ -22,11 +22,9 @@ public class CheckedEntity extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "category_item_id", nullable = false)
-  private CategoryItemEntity categoryItem;
+  @Column(name = "category_item_id", nullable = false)
+  private Long categoryItem;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "user_id", nullable = false)
-  private SubscriberEntity user;
+  @Column(name = "user_id", nullable = false)
+  private Long user;
 }

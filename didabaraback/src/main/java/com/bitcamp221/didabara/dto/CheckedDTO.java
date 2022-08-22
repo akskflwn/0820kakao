@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 public class CheckedDTO {
 
   private Long id;
-  private SubscriberEntity user;
-  private CategoryItemEntity categoryItem;
+  private Long user;
+  private Long categoryItem;
   private LocalDateTime createdDate;
   private LocalDateTime modifiedDate;
 

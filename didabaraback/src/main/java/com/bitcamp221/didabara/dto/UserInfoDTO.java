@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 public class UserInfoDTO {
 
   private Long id;
-  private UserEntity user;
   private String job;
   private int role;
   private boolean ban;
@@ -26,7 +25,6 @@ public class UserInfoDTO {
 //xpt
   public UserInfoDTO (UserInfoEntity userInfoEntity) {
     this.id = userInfoEntity.getId();
-    this.user = userInfoEntity.getUser();
     this.job = userInfoEntity.getJob();
     this.role = userInfoEntity.getRole();
     this.ban = userInfoEntity.isBan();
@@ -39,7 +37,6 @@ public class UserInfoDTO {
 
     return UserInfoEntity.builder()
             .id(userInfoDTO.getId())
-            .user(userInfoDTO.getUser())
             .job(userInfoDTO.getJob())
             .role(userInfoDTO.getRole())
             .ban(userInfoDTO.isBan())

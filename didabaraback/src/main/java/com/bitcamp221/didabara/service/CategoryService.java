@@ -1,7 +1,8 @@
 package com.bitcamp221.didabara.service;
 
-import com.bitcamp221.didabara.dto.CategoryDTO;
+import com.bitcamp221.didabara.mapper.CategoryMapper;
 import com.bitcamp221.didabara.model.CategoryEntity;
+import com.bitcamp221.didabara.model.UserEntity;
 import com.bitcamp221.didabara.presistence.CategoryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class CategoryService {
 
   @Autowired
   private CategoryRepository categoryRepository;
+
+  @Autowired
+  private CategoryMapper categoryMapper;
 
   //  -----------------------------------------------------
 //  작성자 : 문병훈
@@ -110,4 +114,6 @@ public class CategoryService {
 
     return null;
   }
+
 }
+

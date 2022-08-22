@@ -18,17 +18,11 @@ import java.io.Serializable;
 public class UserInfoEntity extends BaseTimeEntity {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id")
   private Long id;
 
-//  외래키를 가져와서 기본키로 설정하기 위한 설정.
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @MapsId
-  @JoinColumn(name = "id")
-  private UserEntity user;
-
-  @Column(name = "job", nullable = false)
+  @Column(name = "job", nullable = false, length = 30)
   private String job;
 
   //  0은 일반 유저, 1은 관리자

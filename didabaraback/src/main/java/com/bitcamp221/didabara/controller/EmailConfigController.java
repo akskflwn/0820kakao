@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.UUID;
 
 
 @Slf4j
@@ -33,8 +34,9 @@ public class EmailConfigController {
      *     "email":"testidi21233@gmail.com",
      *     "authCode":"865027"
      * }
-     * @return "코드 인증 확인" OR  "코드 불일치"
+     * @return String "코드 인증 확인" OR  "코드 불일치"
      */
+<<<<<<< HEAD
     /** @PostMapping("/check") public ResponseEntity<?> checkEmail(@RequestBody Map emailAuthCodeMap) {
     Object o = emailAuthCodeMap.get("email");
     Object o1 = emailAuthCodeMap.get("authCode");
@@ -44,6 +46,24 @@ public class EmailConfigController {
 
     if (!checkEmail){
     return ResponseEntity.badRequest().body("코드 불일치");
+=======
+    @PostMapping("/check")
+    public ResponseEntity<?> checkEmail(@RequestBody Map emailAuthCodeMap) {
+        if (emailAuthCodeMap == null) {
+            log.warn("emailAuthCodeMap 널 값");
+            return null;
+        }
+        String o = (String) emailAuthCodeMap.get("email");
+        String o1 = (String) emailAuthCodeMap.get("authCode");
+        log.info("o.email={}", o.toString());
+        log.info("o1.authCode={}", o1.toString());
+        boolean checkEmail = emailConfigService.checkEmail(emailAuthCodeMap);
+
+    if (!checkEmail){
+        return ResponseEntity.badRequest().body("코드 불일치");
+    }
+        return ResponseEntity.ok().body("코드 인증 확인");
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
     }
     return ResponseEntity.ok().body("코드 인증 확인");
     }
@@ -54,7 +74,7 @@ public class EmailConfigController {
      * 메서드 기능 : 회원 가입한 사람의 이메일을 받아서 인증 코드 전송
      *
      * @param email http://localhost:8080/email/testidi21233@gmail.com
-     * @return 전송 완료 or 전송 실패
+     * @return String 전송 완료 or 전송 실패
      */
 
 
@@ -68,11 +88,10 @@ public class EmailConfigController {
             log.error("emailSender={}", e.getMessage());
             return ResponseEntity.badRequest().body("전송 실패");
         }
-
-
         return ResponseEntity.ok().body("전송 완료");
     }
 
+<<<<<<< HEAD
 
 
     @PostMapping("/check")
@@ -85,11 +104,14 @@ public class EmailConfigController {
         boolean checkEmail = emailConfigService.check(map);
 
         if (!checkEmail){
-            return ResponseEntity.badRequest().body("코드 불일치");
+            return ResponseEntity.badRequest().body("코드 불일치");git
         }
         return ResponseEntity.ok().body("코드 인증 확인");
     }
 }
 
 
+
+
+}
 

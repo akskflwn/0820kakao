@@ -24,6 +24,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
   implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+  implementation 'org.springframework.boot:spring-boot-starter-test'
   compileOnly 'org.projectlombok:lombok'
   developmentOnly 'org.springframework.boot:spring-boot-devtools'
   runtimeOnly 'com.h2database:h2'
@@ -37,8 +38,6 @@ dependencies {
   runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
   // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
   runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
-  // https://mvnrepository.com/artifact/junit/junit
-  testImplementation group: 'junit', name: 'junit', version: '4.13.1'
 
   implementation 'org.springframework.boot:spring-boot-starter-mail'
 
@@ -47,6 +46,10 @@ dependencies {
 
   implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.7'
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> f742b18fcd014412e263c7ec9edb3ec7bb850e8b
 }
 
 tasks.named('test') {

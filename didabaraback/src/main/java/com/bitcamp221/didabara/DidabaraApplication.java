@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.annotation.PostConstruct;
 
-@SpringBootApplication
 @EnableJpaAuditing
+@SpringBootApplication
 public class DidabaraApplication {
 
   public static void main(String[] args) {

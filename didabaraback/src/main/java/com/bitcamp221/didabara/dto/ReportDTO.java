@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 public class ReportDTO {
 
   private Long id;
-  private UserEntity user;
-  private CategoryEntity host;
+  private Long user;
+  private Long host;
   private String content;
   private String reportCategory;
   private LocalDateTime createdDate;

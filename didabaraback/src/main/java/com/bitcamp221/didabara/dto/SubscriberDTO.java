@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 public class SubscriberDTO {
 
   private Long id;
-  private CategoryEntity category;
-  private UserEntity user;
+  private Long category;
+  private Long user;
   private LocalDateTime createdDate;
   private LocalDateTime modifiedDate;
 

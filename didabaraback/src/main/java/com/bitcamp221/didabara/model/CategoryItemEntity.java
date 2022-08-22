@@ -24,9 +24,8 @@ public class CategoryItemEntity extends BaseTimeEntity {
   @Column(name = "id", unique = true, nullable = false)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "category_id", nullable = false)
-  private CategoryEntity category;
+  @Column(name = "category_id", nullable = false)
+  private Long category;
 
   @Column(name = "item_path", nullable = false)
   private String itemPath;
@@ -39,10 +38,4 @@ public class CategoryItemEntity extends BaseTimeEntity {
 
   @Column(name = "expired_date", nullable = false)
   private LocalDate expiredDate;
-
-  @OneToMany(mappedBy = "categoryItem")
-  private List<CheckedEntity> checkedEntities = new ArrayList<CheckedEntity>();
-
-  @OneToMany(mappedBy = "categoryItem")
-  private List<ReplyEntity> replyEntities = new ArrayList<ReplyEntity>();
 }

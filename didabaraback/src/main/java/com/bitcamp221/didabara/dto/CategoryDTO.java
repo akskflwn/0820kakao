@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class CategoryDTO {
 
   private Long id;
-  private UserEntity host;
+  private Long host;
   private String title;
   private String content;
   private String inviteCode;
@@ -30,7 +30,6 @@ public class CategoryDTO {
     this.title = categoryEntity.getTitle();
     this.content = categoryEntity.getContent();
     this.inviteCode = categoryEntity.getInviteCode();
-    this.profileImageUrl = categoryEntity.getProfileImageUrl();
     this.createdDate = categoryEntity.getCreatedDate();
     this.modifiedDate = categoryEntity.getModifiedDate();
   }
