@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 
 
 @Slf4j
@@ -61,7 +62,8 @@ public class EmailConfigController {
     public ResponseEntity<?> emailSender(@PathVariable String email) {
         try {
             // uri의 이메일 주소를 서비스의 mailsender 메소드 전달 및 호출
-            emailConfigService.mailsend(email);
+            emailConfigService.mailsend22(email);
+
         } catch (Exception e) {
             log.error("emailSender={}", e.getMessage());
             return ResponseEntity.badRequest().body("전송 실패");
@@ -70,19 +72,24 @@ public class EmailConfigController {
 
         return ResponseEntity.ok().body("전송 완료");
     }
+
+
+
+    @PostMapping("/check")
+    public ResponseEntity<?> checkEmail(@RequestBody Map map) throws Exception {
+        System.out.println("///////////////////////////////////////");
+        System.out.println("///////////////////////////////////////check///////////////////////////////");
+        System.out.println(map.get("username"));
+        System.out.println(map.get("auth_code"));
+        System.out.println("///////////////////////////////////////");
+        boolean checkEmail = emailConfigService.check(map);
+
+        if (!checkEmail){
+            return ResponseEntity.badRequest().body("코드 불일치");
+        }
+        return ResponseEntity.ok().body("코드 인증 확인");
+    }
 }
 
-//    @PostMapping("/check")
-//    public ResponseEntity<?> checkEmail(@RequestBody EmailConfigEntity emailConfigEntity) {
-
-//        boolean checkEmail = emailConfigService.check(emailConfigEntity);
-
-//        if (!checkEmail){
-//            return ResponseEntity.badRequest().body("코드 불일치");
-//        }
-//        return ResponseEntity.ok().body("코드 인증 확인");
-//    }
 
 
-
-//}

@@ -26,7 +26,7 @@ public interface EmailConfigMapper {
 
 
     @Select(
-            "select emailconfig.auth_code from emailconfig \n" +
+            "select emailconfig.auth_code,user.username from emailconfig \n" +
                     "join user\n" +
                     "on emailconfig.id=user.id\n" +
                     "where user.username=#{username}")

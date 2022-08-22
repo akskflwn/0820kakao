@@ -111,15 +111,17 @@ public class EmailConfigService {
 
     public void mailsend22(String username) throws Exception {
          Map map = emailConfigMapper.findCode(username);
-         map.get("username");
-         map.get("auth_code");
+        System.out.println("///////////////////////////////////////");
+        System.out.println(map.get("username"));
+        System.out.println(map.get("auth_code"));
+        System.out.println("///////////////////////////////////////");
 
 
 
         MimeMessage m = mailSender.createMimeMessage();
         MimeMessageHelper h = new MimeMessageHelper(m, "UTF-8");
         h.setFrom("kxg1198@naver.com");
-        h.setTo(username);
+        h.setTo((String)map.get("username"));
         h.setSubject("인증 메일이 도착했습니다.");
         h.setText((String) map.get("auth_code")); // 이메일 본문에 적을 값
         log.info("전송완료");
@@ -127,12 +129,21 @@ public class EmailConfigService {
     }
 
 
-   /** public boolean check(EmailConfigEntity emailConfigEntity) {
-       if(Pe) emailConfigEntity.getId()
+   public boolean check(Map map) throws Exception{
+       System.out.println("///////////////////////////////////////");
+       System.out.println(map.get("username"));
+       System.out.println(map.get("auth_code"));
+       System.out.println("///////////////////////////////////////");
 
+       Map userANdCode = emailConfigMapper.findCode((String)map.get("username"));
 
+        if(map.get("username").equals(userANdCode.get("username")) &&
+           map.get("auth_code").equals(userANdCode.get("auth_code"))
+        ){
+             return true;
 
+       }
+           return false;
 
-        return true;
-    }**/
+    }
 }

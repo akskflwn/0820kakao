@@ -33,7 +33,7 @@ public class TokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
 //            페이로드(payload)에 들어갈 내용
                 //식별자      //KEY
-                .setSubject(userEntity.getUsername())
+                .setSubject(userEntity.getId()+"")
                 .setIssuer("didabara app")
                 .setIssuedAt(new Date())// 현재 시간
                 .setExpiration(expiryDate) // 비교할 대상인 Token 생성시간

@@ -127,6 +127,9 @@ public class UserController {
 
         if (user != null) {
 //    토큰 생성.
+            //추가해야할거
+            //유저타입으로 카카오유저랑 유저랑 구별해서
+            //카카오유저 로그인할때마다 토큰 생성해주기?
             final String token = tokenProvider.create(user);
 
             final UserDTO responsUserDTO = UserDTO.builder()
@@ -199,7 +202,10 @@ public class UserController {
         log.info("code={}", code);
 
         String access_Token = userService.getKaKaoAccessToken(code);
-        userService.createKakaoUser(access_Token);
+
+        UserEntity kakaoUser=userService.createKakaoUser(access_Token);
+        //tokenProvider.create(kakaoUser);
+
 
         return ResponseEntity.ok().body(access_Token);
     }

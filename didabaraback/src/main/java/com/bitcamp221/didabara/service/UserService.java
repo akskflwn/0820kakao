@@ -1,7 +1,9 @@
 package com.bitcamp221.didabara.service;
 
 import com.bitcamp221.didabara.dto.UserDTO;
+import com.bitcamp221.didabara.model.EmailConfigEntity;
 import com.bitcamp221.didabara.model.UserEntity;
+import com.bitcamp221.didabara.presistence.EmailConfigRepository;
 import com.bitcamp221.didabara.presistence.UserRepository;
 import com.bitcamp221.didabara.security.TokenProvider;
 import com.google.gson.JsonElement;
@@ -19,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -29,6 +32,9 @@ public class UserService {
 
     @Autowired
     private TokenProvider tokenProvider;
+
+    @Autowired
+    private EmailConfigRepository emailConfigRepository;
 
 
     public UserEntity creat(final UserEntity userEntity) {
@@ -159,20 +165,43 @@ public class UserService {
             System.out.println("id : " + id);
             System.out.println("email : " + email);
 
+            //난수생성
+            String code = UUID.randomUUID().toString().substring(0, 6);
+            log.info(code);
+
+            //
+            EmailConfigEntity emailConfigEntity = EmailConfigEntity.builder()
+                    .authCode(code)
+                    .build();
+            emailConfigRepository.save(emailConfigEntity);
+
             UserEntity kakaoUser = UserEntity.builder()
-                    .id(id)
+
                     .username(email)
                     .nickname(nickname)
                     .password(id+"")
+                    .emailConfigEntity(emailConfigEntity)
                     .build();
 
+            //
             final String tokenasd=tokenProvider.create(kakaoUser);
+            br.close();
+            //
+            if(!userRepository.existsByUsername(kakaoUser.getUsername())){
+                userRepository.save(kakaoUser);
+
+            }else{
+                log.info("이미있는 사용자");
+
+
+            }
+
             System.out.println("///////////////////////////////////////////////////////");
             System.out.println(tokenasd);
             System.out.println("///////////////////////////////////////////////////////");
-            userRepository.save(kakaoUser);
 
-            br.close();
+
+
             return kakaoUser;
 
 
