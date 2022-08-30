@@ -41,7 +41,7 @@ public class TokenProvider {
 //            해더(header)에 들어갈 내용 및 서명을 하기 위한 SECRET_KEY
                 .signWith(key, SignatureAlgorithm.HS256)
 //            페이로드(payload)에 들어갈 내용
-                .setSubject(userEntity.getId().toString())
+                .setSubject(userEntity.getId()+"")
                 .setIssuer("didabara app")
                 .setIssuedAt(new Date())// 현재 시간
                 .setExpiration(expiryDate) // 비교할 대상인 Token 생성시간

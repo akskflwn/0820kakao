@@ -25,4 +25,6 @@ public class EmailConfigEntity extends BaseTimeEntity {
 
     @Column(name = "auth_code", nullable = false, length = 30)
     private String authCode;
+
+
 }

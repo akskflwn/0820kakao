@@ -19,6 +19,7 @@ repositories {
 }
 
 dependencies {
+
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
   implementation 'org.springframework.boot:spring-boot-starter-security'
   implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -46,6 +47,23 @@ dependencies {
 
   implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.7'
 
+  // https://mvnrepository.com/artifact/commons-io/commons-io
+  implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+
+  //s3
+  implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+
+  //websocket
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+  // https://mvnrepository.com/artifact/org.springframework/spring-websocket
+  implementation group: 'org.springframework', name: 'spring-websocket', version: '5.3.22'
+
+  // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
+
+  implementation 'com.documents4j:documents4j-local:1.1.7'
+  implementation 'com.documents4j:documents4j-transformer-msoffice-word:1.1.7'
 
 }
 

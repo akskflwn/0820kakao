@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.ibatis.annotations.One;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -39,5 +40,8 @@ public class UserEntity extends BaseTimeEntity {
   public  void changeNickname(String nickname){
     this.nickname=nickname;
   }
+
+
+
 
 }

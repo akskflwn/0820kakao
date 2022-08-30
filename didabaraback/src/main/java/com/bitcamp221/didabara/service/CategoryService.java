@@ -18,8 +18,7 @@ public class CategoryService {
   @Autowired
   private CategoryRepository categoryRepository;
 
-  @Autowired
-  private CategoryMapper categoryMapper;
+
 
   //  -----------------------------------------------------
 //  작성자 : 문병훈

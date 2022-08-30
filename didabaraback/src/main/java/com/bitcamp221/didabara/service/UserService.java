@@ -1,8 +1,8 @@
 package com.bitcamp221.didabara.service;
 
-import com.bitcamp221.didabara.mapper.EmailConfigMapper;
-import com.bitcamp221.didabara.mapper.UserMapper;
 import com.bitcamp221.didabara.model.UserEntity;
+import com.bitcamp221.didabara.model.UserInfoEntity;
+import com.bitcamp221.didabara.presistence.UserInfoRepository;
 import com.bitcamp221.didabara.presistence.UserRepository;
 import com.bitcamp221.didabara.security.TokenProvider;
 import com.google.gson.JsonElement;
@@ -12,13 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -26,13 +28,12 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private EmailConfigMapper emailConfigMapper;
 
     @Autowired
     private TokenProvider tokenProvider;
+
+    @Autowired
+    UserInfoRepository userInfoRepository;
 
 
     public UserEntity creat(final UserEntity userEntity) {
@@ -63,7 +64,21 @@ public class UserService {
 
 //    matches
         if (originalUser != null && passwordEncoder.matches(password, originalUser.getPassword())) {
-            return originalUser;
+
+            //로그인할떄 유저의 아이디랑 비빌번호가 일치할때
+            //ban check을한다
+
+            UserInfoEntity bancheck =userInfoRepository.findById(originalUser.getId()).orElseThrow(() ->
+                    new IllegalArgumentException("해당 아이디가 없습니다."));
+
+            if(!bancheck.isBan())
+            {
+                return originalUser;
+            }
+            else
+            {
+                log.warn("User {} hasbaned", username);
+            }
         }
 
         return null;
@@ -71,12 +86,13 @@ public class UserService {
 
     //조회
     //username으로 조회하기
-    public UserEntity findUser(final String username){
+    public UserEntity findUser(final String username) {
         return userRepository.findByUsername(username);
     }
+
     //조회
     //userid로 조회하기
-    public UserEntity findById(Long id){
+    public UserEntity findById(Long id) {
         //orElseThrow( )는 Optional 클래스에 포함된 메서드로,
         // Entity 조회와 예외 처리를 단 한 줄로 처리할 수 있음
         UserEntity user = userRepository.findById(id).orElseThrow(() ->
@@ -86,24 +102,27 @@ public class UserService {
 
     //수정
     @Transactional
-    public UserEntity update(UserEntity userEntity){
-        UserEntity user = userRepository.findById(userEntity.getId()).orElseThrow(() ->
+    public UserEntity update(Long id, Map map, PasswordEncoder passwordEncoder) {
+        UserEntity findUser = userRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 아이디가 없습니다."));
 
-        user.changeNickname(userEntity.getNickname());
 
-        user.changePassword(userEntity.getPassword());
+        findUser.changeNickname((String)map.get("nickname"));
 
-        userRepository.save(user);
-        return user;
+        findUser.changePassword(passwordEncoder.encode((String)map.get("password")));
+
+        UserEntity updatedUser=userRepository.save(findUser);
+        return updatedUser;
     }
 
     //삭제
 
-    public void deleteUser(Long id){
-        UserEntity findUser=userRepository.findById(id).orElseThrow(()->
+    public void deleteUser(Long id) {
+        UserEntity findUser = userRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 아이디가 없습니다"));
         userRepository.delete(findUser);
+
+
     }
 
     //에러 처리를 하는 이유는 프로그램이 에러로 인해 종료되지않게 하기 위함
@@ -120,7 +139,7 @@ public class UserService {
     }
 
 
-    public UserEntity createKakaoUser(String token)  {
+    public Map createKakaoUser(String token) {
 
         System.out.println("token = " + token);
 
@@ -158,41 +177,89 @@ public class UserService {
             Long id = element.getAsJsonObject().get("id").getAsLong();
             boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
             String nickname = element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
+            String profile_image = element.getAsJsonObject().get("properties").getAsJsonObject().get("profile_image").getAsString();
             String email = "";
-            if(hasEmail){
+            if (hasEmail) {
                 email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
             }
-            System.out.println("id : " + id);
+
+
+
             System.out.println("email : " + email);
+            System.out.println("id : " + id);
             System.out.println("nickname = " + nickname);
 
             UserEntity user = UserEntity.builder()
                     .id(id)
                     .username(email)
                     .nickname(nickname)
-                    .password(id+"")
+                    .password(id + "")
                     .build();
 
-            // user로 찾은 bearer 토큰 값
-            String find_user_token = tokenProvider.create(user);
-            System.out.println("find_user_token = " + find_user_token);
-            br.close();
 
-            // save 하기 전에 db에 저장되어 있는지 확인후
-            // 저장되어있으면 save하지 않음
 
-            // 이메일로 찾은 유저테이블의 유저객체
-            UserEntity userIdByEmail = userMapper.selectUserIdByEmail(email);
+            if (!userRepository.existsByUsername(email)) {
 
-            if (userIdByEmail == null && !userIdByEmail.getUsername().equals(email)) {
-                userRepository.save(user);
+                UserEntity save = userRepository.save(user);
+
+                System.out.println("///////////////////////////////////////////////////////////////////////////////");
+                String code = UUID.randomUUID().toString().substring(0,6);
+                String imagePath = profile_image;
+                BufferedImage image = null;
+                try {
+                    image = ImageIO.read(new URL(profile_image));
+                    String fileNm = imagePath.substring(imagePath.lastIndexOf("/") + 1);
+                    System.out.println("///////////////////////////////////////////////////////////////////////////////");
+                    log.info(fileNm);
+                    System.out.println("///////////////////////////////////////////////////////////////////////////////");
+                    File file = new File("C:\\발구지\\didabara\\didabaraback\\src\\main\\resources\\static\\images\\"+code+".jpg");
+
+                    String fileUrl = "C:\\발구지\\didabara\\didabaraback\\src\\main\\resources\\static\\images\\";
+
+                    ImageIO.write(image, "jpg", file);
+
+
+                    UserInfoEntity userInfoEntity = UserInfoEntity.builder()
+                            .id(save.getId())
+                            .fileOriname("카카오톡프로필이미지")
+                            .filename(code+".jpg")
+                            .profileImageUrl(fileUrl)
+                            .build();
+                    userInfoRepository.save(userInfoEntity);
+
+                }catch (Exception e){
+                    log.info("오류");
+                }
+                System.out.println("///////////////////////////////////////////////////////////////////////////////");
+
+
+
+
+                br.close();
+
+            } else {
+                log.info("이미 가입된 사용자입니다");
             }
-            return user;
 
+
+            UserEntity findUser = userRepository.findByUsername(email);
+            String find_user_token = tokenProvider.create(findUser);
+            System.out.println("find_user_token = " + find_user_token);
+
+            Map map = new HashMap();
+            map.put(("token"),find_user_token);
+            map.put(("id"),findUser.getId());
+            map.put(("nickname"),findUser.getNickname());
+            map.put(("username"),findUser.getUsername());
+
+
+            return map;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
+
+
     }
 
     /* 카카오 로그인(test) */
@@ -217,7 +284,7 @@ public class UserService {
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=4af7c95054f7e1d31cff647965678936"); // TODO REST_API_KEY 입력
             sb.append("&redirect_uri=http://localhost:8080/auth/kakao"); // TODO 인가코드 받은 redirect_uri 입력
-            System.out.println("code = " + code);
+//            System.out.println("code = " + code);
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
@@ -265,6 +332,11 @@ public class UserService {
         return arrTokens;
     }
 
+//    public UserEntity findUserByUserId(String userId){
+//        UserEntity findUser=userRepository.findById((Long)userId).orElseThrow(()->
+//                new IllegalArgumentException("해당 아이디가 없습니다"));
+//        userRepository.save(findUser);
+//    }
 
 
     /* 유저 저장 */

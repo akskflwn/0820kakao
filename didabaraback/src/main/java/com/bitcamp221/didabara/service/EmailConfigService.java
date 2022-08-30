@@ -2,6 +2,7 @@ package com.bitcamp221.didabara.service;
 
 import com.bitcamp221.didabara.mapper.EmailConfigMapper;
 import com.bitcamp221.didabara.mapper.UserMapper;
+import com.bitcamp221.didabara.model.EmailConfigEntity;
 import com.bitcamp221.didabara.model.UserEntity;
 import com.bitcamp221.didabara.presistence.EmailConfigRepository;
 import com.bitcamp221.didabara.presistence.UserRepository;
@@ -13,6 +14,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
+import javax.transaction.Transactional;
 import java.util.Map;
 import java.util.UUID;
 
@@ -81,6 +83,8 @@ public class EmailConfigService {
      * @param email
      * @throws Exception
      */
+
+    @Transactional
     public void mailsend(String email) throws Exception {
         // 난수 발생
         String code = UUID.randomUUID().toString().substring(0, 6);
@@ -91,15 +95,19 @@ public class EmailConfigService {
         log.info("userIdByEmail.getUsername={}",userIdByEmail.getUsername());
         log.info("userIdByEmail.getId()={}",userIdByEmail.getId());
 
-        // emailconfig 테이블에 찾은 아이디 값,이메일,인증코드 저장
 
-        int checkRow = 0;
-        if (userIdByEmail != null) {
-            checkRow= emailConfigMapper.updateUserIntoEmailconfig(userIdByEmail, code);
+        EmailConfigEntity emailConfigEntity = EmailConfigEntity.builder()
+                .id(userIdByEmail.getId())
+                .authCode(code)
+                .build();
+
+        if(emailRepository.existsById(emailConfigEntity.getId())){
+            emailConfigMapper.updateUserIntoEmailconfig(userIdByEmail,code);
+        }else{
+            emailRepository.save(emailConfigEntity);
         }
 
-        checkRow = emailConfigMapper.saveUserIntoEmailconfig(userIdByEmail, code);
-        log.info("checkRow={}", checkRow);
+        // emailconfig 테이블에 찾은 아이디 값,이메일,인증코드 저장
 
         MimeMessage m = mailSender.createMimeMessage();
         MimeMessageHelper h = new MimeMessageHelper(m, "UTF-8");
@@ -108,6 +116,8 @@ public class EmailConfigService {
         h.setSubject("인증 메일이 도착했습니다.");
         h.setText(code); // 이메일 본문에 적을 값
         mailSender.send(m);
+
+
 
     }
 }

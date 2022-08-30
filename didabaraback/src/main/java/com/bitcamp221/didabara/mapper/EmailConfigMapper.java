@@ -3,6 +3,7 @@ package com.bitcamp221.didabara.mapper;
 import com.bitcamp221.didabara.model.EmailConfigEntity;
 import com.bitcamp221.didabara.model.UserEntity;
 import org.apache.ibatis.annotations.*;
+import org.springframework.security.core.parameters.P;
 
 @Mapper
 public interface EmailConfigMapper {
@@ -20,4 +21,7 @@ public interface EmailConfigMapper {
 
     @Update("UPDATE emailconfig SET auth_code = #{code} WHERE id=#{user.id}")
     int updateUserIntoEmailconfig(@Param("user") UserEntity user, @Param("code") String code);
+
+
+
 }

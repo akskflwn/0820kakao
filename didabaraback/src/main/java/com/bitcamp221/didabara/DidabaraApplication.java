@@ -13,6 +13,10 @@ import javax.annotation.PostConstruct;
 @SpringBootApplication
 public class DidabaraApplication {
 
+  static {
+    System.setProperty("com.amazonaws.sdk.disableEc2Metadata", "true");
+  }
+
   public static void main(String[] args) {
     SpringApplication.run(DidabaraApplication.class, args);
   }

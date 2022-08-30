@@ -23,7 +23,7 @@ public interface UserMapper {
             "FROM user " +
             "JOIN emailconfig " +
             "ON user.id = emailconfig.id " +
-            "WHERE emailconfig.auth_code = #{map.authCode}")
+            "WHERE emailconfig.auth_code = #{map.authCode} AND user.username=#{map.username}")
     Map selectUsernameAndAuthCode(@Param("map") Map map);
 
     @Select("SELECT username,emailconfig.auth_code FROM USER JOIN emailconfig ON USER.ID =emailconfig.ID" +
